@@ -3,6 +3,8 @@ import {AssetsDataType, AssetProfilesDataType} from "@/core/types/assetsTypes";
 import React from "react";
 
 import {storeAssetType} from "@/core/types/assetsTypes";
+import {TenantsDataType} from "@/core/types/tenantsTypes";
+import {storeDeviceType} from "@/core/types/devicesTypes";
 
 export interface Column<T> {
   header: string;
@@ -22,4 +24,4 @@ export type EntityType = {
   value: string;
 };
 
-export type {storeAssetType, AssetsDataType, AssetProfilesDataType};
+export type {storeAssetType, AssetsDataType, AssetProfilesDataType, TenantsDataType, storeDeviceType};

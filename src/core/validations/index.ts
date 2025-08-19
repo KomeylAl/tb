@@ -1,4 +1,5 @@
-import { devicesValidation } from "@/core/validations/devicesValidation";
-import { assetSchema } from "@/core/validations/assetsValidation";
+import {deviceSchema} from "@/core/validations/devicesValidation";
+import {assetSchema} from "@/core/validations/assetsValidation";
+import {tenantSchema} from "@/core/validations/tenantsValidation";
 
-export { devicesValidation, assetSchema };
+export {deviceSchema, assetSchema, tenantSchema};

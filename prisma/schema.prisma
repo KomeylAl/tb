@@ -1,0 +1,120 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tenant {
+  id           Int      @id @default(autoincrement())
+  things_id    String   @unique
+  name         String
+  email        String
+  phone        String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  users        User[]   @relation("TenantUsers")
+  customers    Customer[]   @relation("TenantCustomers")
+  requests     Request[]
+  devices      Device[]
+  assets       Asset[]
+}
+
+model Customer {
+  id        Int      @id @default(autoincrement())
+  things_id String   @unique
+  email     String   @unique
+  name      String
+  tenantId  Int
+  tenant    Tenant   @relation("TenantCustomers", fields: [tenantId], references: [id], onDelete: Cascade)
+
+  devices   Device[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model User {
+  id        Int      @id @default(autoincrement())
+  things_id String   @unique
+  email     String   @unique
+  phone     String?   @unique
+  firstName      String?
+  lastName      String?
+  role      String
+  customerId  String? @unique
+  tenantId  Int
+  tenant    Tenant   @relation("TenantUsers", fields: [tenantId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Device {
+  id        Int      @id @default(autoincrement())
+  things_id String   @unique
+  name      String
+  type      String
+  tenantId  Int
+  customerId  Int?
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customer  Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  requests  Request[]
+}
+
+model Profile {
+  id        Int      @id @default(autoincrement())
+  things_id String   @unique
+  name      String
+  config    Json
+  type      ProfileType
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ProfileType {
+  DEVICE
+  ASSET
+  TENANT
+}
+
+model Asset {
+  id        Int      @id @default(autoincrement())
+  things_id String   @unique
+  name      String
+  type      String
+  tenantId  Int
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Request {
+  id        Int      @id @default(autoincrement())
+  tenantId  Int
+  tenant    Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  deviceId  Int
+  device    Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  requestTime DateTime @default(now()) // زمان درخواست
+  requestType String
+  status     String 
+}
+
+model SyncLog {
+  id            Int      @id @default(autoincrement())
+  entity        String
+  timestamp     DateTime @default(now())
+  status        String
+}

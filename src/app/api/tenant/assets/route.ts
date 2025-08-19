@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.log(error);
     return NextResponse.json(
-        {message: `Error getting assets: ${error}`},
+        {message: `Something went wrong: ${error}`},
         {status: 500}
     );
   }
@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.log(error);
     return NextResponse.json(
-        {message: `Error adding asset: ${error}`},
+        {message: `Something went wrong: ${error}`},
         {status: 500}
     );
   }

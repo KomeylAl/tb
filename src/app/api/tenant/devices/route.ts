@@ -1,37 +1,37 @@
 // import prisma from "@/utils/prisma";
 import {NextRequest, NextResponse} from "next/server";
+import prisma from "@/core/utils/prisma";
+import {getUserInfo} from "@/core/actions/userInfo";
 
 export async function POST(req: NextRequest) {
   const token = req.cookies.get("token");
+  const userInfo = await getUserInfo(token?.value);
   try {
     const {
-      set_id,
       name,
       label,
       type,
-      deviceProfileId,
+      deviceProfileId: {id},
       additionalInfo: {location, description},
     } = await req.json();
 
-    // const tenant = await prisma.tenant.findUnique({
-    //   where: { things_id: tenantID },
-    // });
+    const tenant = await prisma.tenant.findUnique({
+      where: { things_id: userInfo.tenantId.id },
+    });
 
-    // if (!tenant) {
-    //   return NextResponse.json(
-    //       { message: "No Tenant Found." },
-    //       { status: 400 }
-    //   );
-    // }
+    if (!tenant) {
+      return NextResponse.json(
+          { message: "سازمان در پایگاه داده ثبت نشده است. لطفا از مدیر سیستم بخواهید همگام سازی انجام دهند." },
+          { status: 400 }
+      );
+    }
 
-    const id = set_id && {id: set_id, entityType: "DEVICE"};
 
     const sendData = JSON.stringify({
-      id,
       name,
       label,
       type,
-      deviceProfileId: {id: deviceProfileId, entityType: "DEVICE_PROFILE"},
+      deviceProfileId: {id, entityType: "DEVICE_PROFILE"},
       additionalInfo: {location, description},
     });
 
@@ -45,46 +45,37 @@ export async function POST(req: NextRequest) {
     });
 
     if (!response.ok) {
+      const data = await response.json();
       return NextResponse.json(
-          {message: "Error adding device"},
+          {message: data?.message ?? data },
           {status: response.status}
       );
     }
 
-    // const data = await response.json();
+    const data = await response.json();
 
-    // const device = await prisma.device.findUnique({
-    //   where: { things_id: data.id.id },
-    // });
+    const device = await prisma.device.findUnique({
+      where: { things_id: data.id.id },
+    });
 
-    // if (!device) {
-    //   await prisma.device.create({
-    //     data: {
-    //       things_id: data.id.id,
-    //       name,
-    //       type,
-    //       tenantId: tenant!.id,
-    //     },
-    //   });
-    // } else {
-    //   await prisma.device.update({
-    //     where: { things_id: set_id },
-    //     data: {
-    //       things_id: data.id.id,
-    //       name,
-    //       type,
-    //       tenantId: tenant!.id,
-    //     },
-    //   });
-    // }
+    if (!device) {
+      await prisma.device.create({
+        data: {
+          things_id: data.id.id,
+          name,
+          type,
+          tenantId: tenant!.id,
+        },
+      });
+    }
 
     return NextResponse.json(
-        {message: "Device Added Successful"},
+        data,
         {status: 201}
     );
   } catch (error) {
     return NextResponse.json(
-        {message: `Error adding device: ${error}`},
+        {message: `Something went wrong: ${error}`},
         {status: 500}
     );
   }

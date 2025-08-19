@@ -35,7 +35,7 @@ function gregorianToJalali(gy: number, gm: number, gd: number) {
   return [jy, jm, jd];
 }
 
-export function convertISOToJalali(isoDate: number) {
+export function convertISOToJalali(isoDate: number | string) {
   const date = new Date(isoDate);
   const [jy, jm, jd] = gregorianToJalali(
       date.getFullYear(),
