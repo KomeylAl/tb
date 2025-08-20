@@ -28,3 +28,36 @@ export const tenantUserSchema = yup.object({
   password: yup.string().required(),
   email: yup.string().required().email("ایمیل معتبر نیست"),
 });
+
+const numberField = () =>
+    yup
+        .number()
+        .transform((value, originalValue) =>
+            originalValue === "" ? undefined : value
+        )
+        .optional();
+
+export const tenantProfileSchema = yup.object({
+    name: yup.string().required("نام الزامی است"),
+    description: yup.string().optional(),
+
+    type: yup.string().default("DEFAULT"),
+
+    maxDevices: numberField(),
+    maxDashboards: numberField(),
+    maxAssets: numberField(),
+    maxUsers: numberField(),
+    maxCustomers: numberField(),
+    maxRuleChains: numberField(),
+
+    maxEmails: numberField().default(0),
+    smsEnabled: yup.boolean().optional().default(false),
+    maxSms: numberField().default(0),
+
+    limit1: numberField().min(1).default(1),
+    interval1: numberField().min(1).default(1),
+    limit2: numberField().min(1).default(10),
+    interval2: numberField().min(1).default(60),
+
+    default: yup.boolean().optional(),
+});

@@ -7,6 +7,7 @@ import {AssetProfileEntity} from "@/features/feature_asset_profiles/domain/entit
 import {TenantEntity} from "@/features/feature_tenants/domain/entities/tenant_entity";
 import {TenantUserEntity} from "@/features/feature_tenants/domain/entities/tenant_user_entity";
 import {TenantDeviceEntity} from "@/features/feature_tenants/domain/entities/tenant_device_entity";
+import {TenantProfileEntity} from "@/features/feature_tenant_profiles/domain/entities/tenant_profile_entity";
 
 export const tenantColumns: Column<TenantEntity>[] = [
   {
@@ -23,6 +24,15 @@ export const tenantColumns: Column<TenantEntity>[] = [
   {header: "ایمیل", accessor: "email"},
   {header: "تلفن", accessor: "phone"},
   {header: "زمان ایجاد", accessor: (item: TenantEntity) => convertISOToJalali(item.createdTime)},
+];
+
+export const tenantProfileColumns: Column<TenantProfileEntity>[] = [
+    { header: "نام", accessor: "name" },
+    { header: "توضیحات", accessor: "description" },
+    {
+        header: "زمان ایجاد",
+        accessor: (item: TenantProfileEntity) => convertISOToJalali(item.createdTime),
+    },
 ];
 
 export const tenantUsersColumns: Column<TenantUserEntity>[] = [

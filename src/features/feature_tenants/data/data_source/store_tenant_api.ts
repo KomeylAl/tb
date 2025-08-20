@@ -9,7 +9,7 @@ export class StoreTenantApi {
     });
     if (res.status !== 201) {
       const error = await res.json();
-      throw new Error(error.message);
+      throw new Error(error?.message ?? res.statusText);
     }
     return await res.json();
   }

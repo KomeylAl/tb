@@ -1,12 +1,20 @@
 import { TenantDeviceEntity } from "@/features/feature_tenants/domain/entities/tenant_device_entity";
 import {TenantEntity} from "@/features/feature_tenants/domain/entities/tenant_entity";
 import {TenantUserEntity} from "@/features/feature_tenants/domain/entities/tenant_user_entity";
+import {TenantProfileEntity} from "@/features/feature_tenant_profiles/domain/entities/tenant_profile_entity";
 
 export interface TenantsDataType {
   data: TenantEntity[];
   hasNext: boolean;
   totalElements: number;
   totalPages: number;
+}
+
+export interface TenantProfilesDataType {
+    data: TenantProfileEntity[];
+    hasNext: boolean;
+    totalElements: number;
+    totalPages: number;
 }
 
 export interface TenantUsersDataType {
@@ -41,6 +49,30 @@ export type storeTenantType = {
   additionalInfo: {
     description?: string;
   };
+};
+
+export type storeTenantProfileType = {
+    name: string;
+    description?: string;
+    type?: string;
+
+    maxDevices?: number;
+    maxDashboards?: number;
+    maxAssets?: number;
+    maxUsers?: number;
+    maxCustomers?: number;
+    maxRuleChains?: number;
+
+    maxEmails?: number;
+    smsEnabled?: boolean;
+    maxSms?: number;
+
+    limit1?: number;
+    interval1?: number;
+    limit2?: number;
+    interval2?: number;
+
+    default?: boolean;
 };
 
 export type storeTenantUserType = {
